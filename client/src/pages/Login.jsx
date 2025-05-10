@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useAuthContext } from "../contexts/AuthContext";
 
 const Login = () => {
@@ -32,11 +32,13 @@ const Login = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        import.meta.env.VITE_SERVER_URL + "/api/auth/login",
+        import.meta.env.VITE_SERVER_URL + "/login",
         options
       );
+
       const data = await response.json();
-      setCurrentUser(data.user);
+      if(response.status !== 200) throw new Error(data.error)
+      setCurrentUser(data.email);
       setToken(data.token);
     } catch (err) {
       setError(err.message);

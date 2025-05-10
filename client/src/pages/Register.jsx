@@ -17,10 +17,13 @@ const Register = () => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
+    if(passwordRef.current.value !== confirmPasswordRef.current.value ){
+      return setError("Passwords did not match");
+    }
+
     const payload = {
       email: emailRef.current.value,
       password: passwordRef.current.value,
-      confirm_password: confirmPasswordRef.current.value,
     };
 
     const options = {
@@ -33,11 +36,12 @@ const Register = () => {
 
     try {
       const response = await fetch(
-        import.meta.env.VITE_SERVER_URL + "/api/auth/register",
+        import.meta.env.VITE_SERVER_URL + "/register",
         options
       );
       const data = await response.json();
-      setCurrentUser(data.user);
+      if(response.status !== 200) throw new Error(data.error)
+      setCurrentUser(data.email);
       setToken(data.token);
     } catch (err) {
       setError(err.message);
