@@ -1,12 +1,14 @@
 require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
+const cors = require('cors')
 const {passport, generateToken} = require('./auth');
 const bcrypt = require('bcrypt');
 const db = require('./db');
 
 const app = express();
 
+app.use(cors('http://localhost:5173/'))
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(passport.initialize());
@@ -52,7 +54,7 @@ app.post('/login', (req, res) => {
 
 // Protected Route
 app.get('/data', passport.authenticate('jwt', { session: false }), (req, res) => {
-    res.json({ message: "You are authenticated!", user: req.user });
+    res.json({ message: "Here is your data!", user: req.user });
 });
 
 const PORT = process.env.PORT || 3000;
