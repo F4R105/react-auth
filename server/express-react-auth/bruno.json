@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "express-react-auth",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
