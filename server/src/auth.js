@@ -16,7 +16,8 @@ passport.use(new JwtStrategy(opts, (jwt_payload, done) => {
     db.get("SELECT * FROM users WHERE id = ?", [jwt_payload.id], (err, user) => {
         if (err) return done(err, false);
         if (!user) return done(null, false);
-        return done(null, user);
+
+        return done(null, {id: user.id, email: user.email});
     });
 }));
 

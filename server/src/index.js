@@ -18,7 +18,7 @@ app.post('/register', (req, res) => {
 
     // Hash password before storing
     bcrypt.hash(password, 10, (err, hash) => {
-        if (err) return res.send("Error hashing password");
+        if (err) return res.status(500).json({ error: "Error hashing password" });
 
         db.run("INSERT INTO users (email, password) VALUES (?, ?)", [email, hash], (err) => {
             if (err) return res.send("Email already exists");
@@ -42,14 +42,16 @@ app.post('/login', (req, res) => {
             if (err) return res.status(500).json({ error: "Error verifying password" });
             if (!isMatch) return res.status(401).json({ error: "Incorrect email or password" });
 
-            const token = generateToken(user);
-            res.json({ token });
+            res.json({
+                email: user.email,
+                token: generateToken({ id: user.id,email: user.email})
+            });
         });
     });
 });
 
 // Protected Route
-app.get('/protected', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.get('/data', passport.authenticate('jwt', { session: false }), (req, res) => {
     res.json({ message: "You are authenticated!", user: req.user });
 });
 
